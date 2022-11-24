@@ -245,6 +245,7 @@ class VisionTransformer(nn.Layer):
 
         return dict(out=x)
 
+    @paddle.jit.to_static
     def forward(self, x):
         if not self.allow_mod:
             return self.forward_original(x)

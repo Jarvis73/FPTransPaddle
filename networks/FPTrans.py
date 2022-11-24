@@ -82,7 +82,6 @@ class FPTrans(nn.Layer):
             nn.Conv2D(256, embed_dim, kernel_size=1),
         ))
 
-    @paddle.jit.to_static
     def forward(self, x, s_x, s_y, y=None, out_shape=None):
         """
 
