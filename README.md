@@ -2,13 +2,11 @@
 
 [Jian-Wei Zhang](https://github.com/Jarvis73), Yifan Sun, Yi Yang, Wei Chen
 
-[[arXiv](https://arxiv.org/abs/2210.06908)][[Bibtex](https://github.com/Jarvis73/FPTrans#CitingFPTrans)]
+[[arXiv](https://arxiv.org/abs/2210.06908)][[Bibtex](https://github.com/Jarvis73/FPTransPaddle#CitingFPTrans)]
 
-This repository is the PaddlePaddle Implementation. One can find the PyTorch implementation from [here](https://github.com/Jarvis73/FPTrans).
+This repository is the **PaddlePaddle** Implementation. One can find the PyTorch implementation from [here](https://github.com/Jarvis73/FPTrans).
 
 ![Framework](./assets/framework.png)
-
-## FPTrans-Paddle
 
 ## Installation
 
@@ -18,7 +16,7 @@ Create a virtual environment and install the required packages.
 conda create -n fptrans_paddle python=3.9.7
 conda activate fptrans_paddle
 conda install paddlepaddle-gpu==2.3.2 cudatoolkit=11.2 -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/Paddle/ -c conda-forge
-conda install tqdm scipy
+conda install tqdm scipy pyyaml
 pip install git+https://github.com/IDSIA/sacred.git@0.8.3
 pip install pycocotools opencv-python
 ```
@@ -45,11 +43,57 @@ See [Preparing Datasets and Pretrained Backbones for FPTrans](./data/README.md)
 
 ### Usage for inference with our pretrained models
 
-Download the checkpoints of our pretrained FPTrans from [GoogleDrive]() or [Baidu]().
+Download the checkpoints of our pretrained FPTrans from [GoogleDrive](https://drive.google.com/drive/folders/1leK51aSPhw7kTJzwCY1ApcMJ5JG9K2Mv?usp=share_link) or [Baidu](https://pan.baidu.com/s/1v4PJJAe4EG1OwFnliAHEyQ) (Code: FPTr),
+and put the pretrained models (the numbered folders) into `./output/`.
 
+| Datasets  | Backbone  | #Shots | Experiment ID (Split 0 - Split 3) |
+|:---------:|:---------:|:------:|:---------------------------------:|
+| PASCAL-5i | ViT-B/16  | 1-shot |              1,2,3,4              |
+|           | DeiT-B/16 | 1-shot |              5,6,7,8              |
+|           | DeiT-S/16 | 1-shot |            9,10,11,12             |
+|           | DeiT-T/16 | 1-shot |            13,14,15,16            |
+|           | ViT-B/16  | 5-shot |            17,18,19,20            |
+|           | DeiT-B/16 | 5-shot |            21,22,23,24            |
+| COCO-20i  | ViT-B/16  | 1-shot |            25,26,27,28            |
+|           | DeiT-B/16 | 5-shot |            29,30,31,32            |
+|           | ViT-B/16  | 1-shot |            33,34,35,36            |
+|           | DeiT-B/16 | 5-shot |            37,38,39,40            |
 
+Run the `test` command:
+
+```bash
+# PASCAL ViT 1shot
+cuda 0 python run.py test with configs/pascal_vit.yml exp_id=1 split=0
+
+# PASCAL ViT 5shot
+cuda 0 python run.py test with configs/pascal_vit.yml exp_id=17 split=0 shot=5
+```
 
 ### Usage for training from scratch
+
+Run the `train` command (adjust batch size `bs` for adapting the GPU memory):
+
+```bash
+# PASCAL 1shot
+cuda 0 python run.py train with split=0 configs/pascal_vit.yml
+
+# PASCAL 5shot
+cuda 0,1 python run.py train with split=0 configs/pascal_vit.yml shot=5
+
+# COCO 1shot
+cuda 0,1 python run.py train with split=0 configs/coco_vit.yml
+
+# COCO 5shot
+cuda 0,1,2,3 python run.py train with split=0 configs/coco_vit.yml shot=5 bs=8
+```
+
+Optional arguments:
+
+* `-i <Number>`: Specify the experiment id. Default is incremental numbers in the `./output` directory (or MongoDB if used).
+* `-p`: print configurations
+* `-u`: Run command without saving experiment details. (used for debug)
+
+Please refer to [Sacred Documentation](https://sacred.readthedocs.io/en/stable/index.html) for complete command line interface.
 
 
 ### Performance

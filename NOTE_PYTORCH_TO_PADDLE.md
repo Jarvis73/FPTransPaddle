@@ -1,4 +1,4 @@
-# Note: Converting PyTorch Code to PaddlePaddle Platform
+# Note: Transferring PyTorch Code to PaddlePaddle Platform
 
 Here is a note for converting PyTorch to PaddlePaddle:
 
