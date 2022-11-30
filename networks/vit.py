@@ -145,6 +145,8 @@ class VisionTransformer(nn.Layer):
         self.prompt_tokens = None
         if self.allow_mod:
             ncls = 15 if opt.dataset == "PASCAL" else 60
+            if opt.coco2pascal:
+                ncls = 60
             divider = 1 + opt.bg_num * opt.shot
             self.prompt_tokens = self.create_parameter(
                 [ncls * divider, opt.num_prompt // divider, embed_dim],

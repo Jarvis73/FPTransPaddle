@@ -133,8 +133,6 @@ def setup(ex):
         }
         save_dir = None
 
-        test_start = 1  # only for debug
-
     @ex.named_config
     def debug():
         bs = 4
