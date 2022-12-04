@@ -10,7 +10,6 @@ from scipy.ndimage import distance_transform_edt
 import cv2
 
 from config import MapConfig
-from constants import project_dir
 from data_kits.datasets import DATA_DIR, DATA_LIST
 from utils_.misc import load_image
 
