@@ -38,7 +38,9 @@ class Trainer(BaseTrainer):
         qry_rgb = batch['qry_rgb'].cuda()
         qry_msk = batch['qry_msk'].cuda()
         classes = batch['cls'].cuda()
-        kwargs = {'weight': batch['weights'].cuda()}
+        kwargs = {}
+        if 'weights' in batch:
+            kwargs['weight'] = batch['weights'].cuda()
 
         output = self.model_DP(qry_rgb, sup_rgb, sup_msk, qry_msk)
         qry_msk_reshape = qry_msk.reshape((-1, *qry_msk.shape[-2:]))
