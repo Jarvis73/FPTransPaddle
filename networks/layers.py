@@ -42,7 +42,7 @@ class DropBlock2D(nn.Layer):
             gamma = self._compute_gamma(x)
 
             # sample mask
-            mask = paddle.cast(paddle.rand(x.shape[0], *x.shape[2:]) < gamma, paddle.float32)
+            mask = paddle.cast(paddle.rand((x.shape[0], *x.shape[2:])) < gamma, paddle.float32)
 
             # place mask on input device
             # ZJW: Tensors in python lib Paddle-GPU are default on GPU
