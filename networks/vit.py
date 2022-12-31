@@ -150,7 +150,7 @@ class VisionTransformer(nn.Layer):
             divider = 1 + opt.bg_num * opt.shot
             self.prompt_tokens = self.create_parameter(
                 [ncls * divider, opt.num_prompt // divider, embed_dim],
-                default_initializer=nn.initializer.TruncatedNormal(std=opt.pt_std))
+                default_initializer=nn.initializer.TruncatedNormal(std=opt.pt_std))     # [bank_size, G, embed_dim]
             self.sampler = np.random.RandomState(1234)
 
         # Class token, Distillation token
@@ -256,15 +256,15 @@ class VisionTransformer(nn.Layer):
         # fg_token: [B, 1, C]
         # bg_token: [B, k, C]
         x, (fg_token, bg_token) = x
-        bank_size, psize, embed_dim = self.prompt_tokens.shape
+        bank_size, G, embed_dim = self.prompt_tokens.shape
         B = x.shape[0] // (1 + self.opt.shot)
         divider = 1 + self.opt.bg_num * self.opt.shot
         prompts = self.prompt_tokens[self.sampler.choice(bank_size, size=B * divider, replace=False)] \
-            .reshape((B, divider * psize, embed_dim))    # [B, 2*psize, embed_dim]
+            .reshape((B, divider * G, embed_dim))    # [B, 2*psize, embed_dim]
         tokens = {
-            'fg': prompts[:, :psize] + fg_token,
-            'bg': prompts[:, psize:] + bg_token.unsqueeze(2).expand((-1, -1, psize, -1)).reshape(
-                (B, (divider - 1) * psize, embed_dim))
+            'fg': prompts[:, :G] + fg_token,
+            'bg': prompts[:, G:] + bg_token.unsqueeze(2).expand((-1, -1, G, -1)).reshape(
+                (B, (divider - 1) * G, embed_dim))
         }
 
         x = self.patch_embed(x)  # [B, N ,C]
